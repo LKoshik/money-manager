@@ -1,0 +1,29 @@
+/* Settings screen. Only theme variables, so dark mode needs nothing extra. */
+.settings-title {
+  font-size: var(--font-size-lg);
+}
+
+.settings-group-title {
+  font-size: var(--font-size-md);
+  color: var(--color-text-muted);
+}
+
+.settings-reminder {
+  padding: var(--space-3);
+  border-left: 4px solid var(--color-warning);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-2);
+  color: var(--color-text);
+}
+
+.settings-storage {
+  font-weight: 600;
+}
+
+.settings-storage--protected {
+  color: var(--color-income);
+}
+
+.settings-storage--unprotected {
+  color: var(--color-warning);
+}

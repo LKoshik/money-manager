@@ -1,0 +1,66 @@
+/* The number pad and the big amount shown above it. */
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+}
+
+.numpad-key {
+  min-height: 56px; /* bigger than the 44px minimum: this is the key people tap the most */
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-2);
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  transition: transform var(--duration-fast) var(--ease), background var(--duration-fast);
+}
+
+.numpad-key:active {
+  transform: scale(0.96);
+  background: var(--color-accent-soft);
+}
+
+.amount-display {
+  padding: var(--space-3) 0;
+  text-align: center;
+  font-size: var(--font-size-xxl);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.amount-display--expense {
+  color: var(--color-expense);
+}
+
+.amount-display--income {
+  color: var(--color-income);
+}
+
+.amount-display--empty {
+  opacity: 0.4; /* a hint that nothing is typed yet */
+}
+
+.amount-summary {
+  width: 100%;
+  min-height: var(--tap-size);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-2);
+}
+
+.amount-summary-value {
+  flex: 1;
+  text-align: left;
+  font-size: var(--font-size-xl);
+}
+
+.amount-summary-change {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-accent);
+}

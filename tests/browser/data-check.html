@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Money Manager: data layer check</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 24px auto; padding: 0 16px; line-height: 1.5; }
+    h1 { font-size: 1.3rem; }
+    li { margin: 8px 0; list-style: none; }
+    .ok::before { content: "PASS  "; color: #15803d; font-weight: 700; }
+    .fail::before { content: "FAIL  "; color: #b91c1c; font-weight: 700; }
+    .error { color: #b91c1c; display: block; margin-left: 3.2em; font-size: 0.9rem; }
+    #summary { font-weight: 700; margin: 16px 0; }
+    button { font-size: 1rem; padding: 10px 16px; }
+  </style>
+</head>
+<body>
+  <h1>Data layer check</h1>
+  <p>Uses its own test database, so your real data is safe.</p>
+  <button id="run">Run again</button>
+  <p id="summary">Running...</p>
+  <ul id="results"></ul>
+  <script type="module">
+    import { runChecks } from './data-check.js';
+
+    const list = document.getElementById('results');
+    const summary = document.getElementById('summary');
+
+    async function run() {
+      summary.textContent = 'Running...';
+      list.replaceChildren();
+      const results = await runChecks();
+      for (const result of results) {
+        const item = document.createElement('li');
+        item.className = result.ok ? 'ok' : 'fail';
+        item.append(result.name);
+        if (!result.ok) {
+          const detail = document.createElement('span');
+          detail.className = 'error';
+          detail.textContent = result.error;
+          item.append(detail);
+        }
+        list.append(item);
+      }
+      const failed = results.filter((r) => !r.ok).length;
+      summary.textContent = failed === 0
+        ? `All ${results.length} checks passed.`
+        : `${failed} of ${results.length} checks FAILED.`;
+    }
+
+    document.getElementById('run').addEventListener('click', run);
+    run();
+  </script>
+</body>
+</html>

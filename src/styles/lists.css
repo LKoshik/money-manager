@@ -1,0 +1,89 @@
+/* Lists and amounts: one row design for transactions and accounts. */
+.list-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.list-row {
+  width: 100%;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  text-align: left;
+}
+
+.list-row + .list-row {
+  border-top: 1px solid var(--color-border);
+}
+
+.list-row:active {
+  background: var(--color-surface-2);
+}
+
+.list-row-icon {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  background: var(--color-surface-2);
+  background: color-mix(in srgb, var(--row-color, var(--color-text-muted)) 18%, transparent);
+}
+
+.list-row-main {
+  flex: 1;
+  min-width: 0; /* lets long notes be cut with ... instead of pushing the amount away */
+  display: flex;
+  flex-direction: column;
+}
+
+.list-row-title,
+.list-row-sub {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list-row-title {
+  font-weight: 600;
+}
+
+.list-row-sub {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.list-row-amount {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.amount--income {
+  color: var(--color-income);
+}
+
+.amount--expense {
+  color: var(--color-expense);
+}
+
+/* The big "Total balance" card (ui/totalCard.js), used on Home and Accounts. */
+.total-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-5) var(--space-4);
+}
+
+.total-amount {
+  font-size: var(--font-size-xxl);
+  font-variant-numeric: tabular-nums;
+}

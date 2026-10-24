@@ -1,0 +1,101 @@
+/* Budgets screen. Bar colors use the shared variables, so dark mode needs nothing extra. */
+.budget-title {
+  font-size: var(--font-size-lg);
+}
+
+.budget-summary {
+  gap: var(--space-3);
+}
+
+.budget-row {
+  width: 100%;
+  min-height: 76px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+}
+
+.budget-row + .budget-row {
+  border-top: 1px solid var(--color-border);
+}
+
+.budget-row:active {
+  background: var(--color-surface-2);
+}
+
+.budget-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.budget-row-name {
+  flex: 1;
+  min-width: 0; /* long names are cut with ... instead of pushing the amount away */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.budget-row-remaining {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.budget-row-bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+.budget-bar {
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-2);
+  overflow: hidden;
+}
+
+.budget-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  transition: width var(--duration) var(--ease);
+}
+
+.budget-bar-fill--ok { background: var(--color-income); }
+.budget-bar-fill--warning { background: var(--color-warning); }
+.budget-bar-fill--over { background: var(--color-expense); }
+
+.budget-text--ok { color: var(--color-income); }
+.budget-text--warning { color: var(--color-warning); }
+.budget-text--over { color: var(--color-expense); }
+
+.budget-set-link {
+  color: var(--color-accent);
+  font-size: var(--font-size-sm);
+}
+
+.limit-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.limit-head-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.limit-hint {
+  text-align: center;
+  margin-bottom: calc(var(--space-2) * -1);
+}

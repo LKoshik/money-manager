@@ -1,0 +1,115 @@
+/* Modal, bottom sheet and toast. */
+.overlay-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: flex;
+  background: var(--color-overlay);
+  animation: fade-in var(--duration-fast) var(--ease);
+}
+
+.overlay-backdrop--modal {
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+.overlay-backdrop--sheet {
+  align-items: flex-end;
+}
+
+.overlay-panel {
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  max-height: 90dvh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  color: var(--color-text);
+  outline: none;
+}
+
+.overlay-panel--modal {
+  max-width: 400px;
+  border-radius: var(--radius-lg);
+  animation: pop-in var(--duration) var(--ease);
+}
+
+.overlay-panel--sheet {
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding-bottom: var(--safe-bottom);
+  animation: sheet-up var(--duration) var(--ease);
+}
+
+.overlay-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+}
+
+.overlay-title {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+}
+
+.overlay-body {
+  padding: 0 var(--space-4) var(--space-4);
+  overflow-y: auto;
+}
+
+.toast-root {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--nav-height) + var(--safe-bottom) + var(--space-5));
+  z-index: var(--z-toast);
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.toast {
+  max-width: 90%;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-size: var(--font-size-sm);
+  pointer-events: none; /* a toast must never block a tap on what is under it */
+  animation: sheet-up var(--duration) var(--ease);
+}
+
+/* While a sheet or dialog is open the bottom is full of buttons, so toasts move to the top. */
+body:has(.overlay-backdrop) .toast-root {
+  bottom: auto;
+  top: calc(var(--safe-top) + var(--space-4));
+}
+
+.toast--error {
+  background: var(--color-expense);
+  color: var(--color-on-danger);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+@keyframes sheet-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}

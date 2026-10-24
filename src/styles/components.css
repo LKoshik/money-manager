@@ -1,0 +1,101 @@
+/* Reusable pieces: buttons, cards, empty state. */
+.btn {
+  min-height: var(--tap-size);
+  padding: 0 var(--space-4);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: transform var(--duration-fast) var(--ease), opacity var(--duration-fast);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn--primary {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.btn--secondary {
+  background: var(--color-surface-2);
+}
+
+.btn--ghost {
+  color: var(--color-accent);
+}
+
+.btn--danger {
+  background: var(--color-expense);
+  color: var(--color-on-danger);
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.icon-btn {
+  width: var(--tap-size);
+  height: var(--tap-size);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-card);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+}
+
+.empty-state-icon {
+  color: var(--color-text-muted);
+}
+
+/* "New version ready" bar (ui/updateBanner.js). Sits above the bottom nav. */
+.update-banner {
+  position: fixed;
+  left: var(--space-3);
+  right: var(--space-3);
+  /* Extra space because the big "+" button rises above the nav. */
+  bottom: calc(var(--nav-height) + var(--safe-bottom) + var(--space-6) + var(--space-3));
+  z-index: var(--z-toast);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+  animation: sheet-up var(--duration) var(--ease);
+}
+
+.update-banner-text {
+  flex: 1;
+}
+
+/* A sheet or dialog is open: do not cover its buttons. */
+body:has(.overlay-backdrop) .update-banner {
+  display: none;
+}

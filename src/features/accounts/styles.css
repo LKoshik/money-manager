@@ -1,0 +1,17 @@
+/* Accounts screen. */
+.archived-toggle {
+  min-height: var(--tap-size);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.archived-toggle svg {
+  transition: transform var(--duration-fast) var(--ease);
+}
+
+.archived-toggle[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}

@@ -1,0 +1,21 @@
+/* Light theme colors. One accent color; green = income, red = expense. */
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-bg: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-surface-2: #eef0f4;
+  --color-text: #111827;
+  --color-text-muted: #5b6472;
+  --color-border: #e3e6eb;
+  --color-accent: #4f46e5;
+  --color-accent-soft: #e8e7fc;
+  --color-on-accent: #ffffff;
+  --color-income: #15803d;
+  --color-expense: #dc2626;
+  --color-on-danger: #ffffff;
+  --color-warning: #b45309;
+  --color-overlay: rgba(17, 24, 39, 0.45);
+  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.06), 0 1px 3px rgba(16, 24, 40, 0.08);
+  --shadow-fab: 0 6px 16px rgba(79, 70, 229, 0.35);
+}

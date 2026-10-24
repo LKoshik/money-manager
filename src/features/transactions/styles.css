@@ -1,0 +1,59 @@
+/* History screen. */
+.txn-toolbar {
+  position: sticky; /* the search stays visible while the list scrolls */
+  top: 0;
+  z-index: 1;
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-1) 0 var(--space-2);
+  background: var(--color-bg);
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--tap-size);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.search-input:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.filter-btn {
+  position: relative;
+  flex: 0 0 var(--tap-size);
+  height: var(--tap-size);
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-2);
+}
+
+.filter-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.day-header {
+  margin: var(--space-4) 0 var(--space-2) var(--space-1);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}

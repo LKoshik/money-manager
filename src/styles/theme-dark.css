@@ -1,0 +1,20 @@
+/* Dark theme: it only switches the color variables. Nothing else changes. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #0f1115;
+  --color-surface: #171a20;
+  --color-surface-2: #20242c;
+  --color-text: #f1f3f6;
+  --color-text-muted: #a0a8b5;
+  --color-border: #2a2f38;
+  --color-accent: #8b93ff;
+  --color-accent-soft: #272a4a;
+  --color-on-accent: #0f1115;
+  --color-income: #4ade80;
+  --color-expense: #f87171;
+  --color-on-danger: #0f1115;
+  --color-warning: #fbbf24;
+  --color-overlay: rgba(0, 0, 0, 0.6);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-fab: 0 6px 16px rgba(0, 0, 0, 0.5);
+}

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <!-- viewport-fit=cover lets the app use the full screen; env(safe-area-inset-*) keeps content clear of notches. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- theme.js changes this color when the theme changes, so the status bar matches. -->
+  <meta name="theme-color" content="#f6f7f9">
+  <meta name="color-scheme" content="light dark">
+  <!-- In development these live in pwa/; the build script moves them next to index.html. -->
+  <link rel="manifest" href="pwa/manifest.json">
+  <link rel="icon" type="image/png" href="pwa/icons/icon-192.png">
+  <title>Money Manager</title>
+  <script>
+    // Runs before the first paint, so dark phones never see a white flash.
+    // The saved theme choice is applied a moment later, once the data is loaded.
+    document.documentElement.dataset.theme =
+      matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  </script>
+  <!-- data-dev-css: the build script (Phase 9) removes these and inlines all CSS instead. -->
+  <link data-dev-css rel="stylesheet" href="styles/tokens.css">
+  <link data-dev-css rel="stylesheet" href="styles/theme-light.css">
+  <link data-dev-css rel="stylesheet" href="styles/theme-dark.css">
+  <link data-dev-css rel="stylesheet" href="styles/base.css">
+  <link data-dev-css rel="stylesheet" href="styles/layout.css">
+  <link data-dev-css rel="stylesheet" href="styles/components.css">
+  <link data-dev-css rel="stylesheet" href="styles/lists.css">
+  <link data-dev-css rel="stylesheet" href="styles/overlays.css">
+  <link data-dev-css rel="stylesheet" href="styles/numpad.css">
+  <link data-dev-css rel="stylesheet" href="styles/forms.css">
+  <link data-dev-css rel="stylesheet" href="styles/charts.css">
+</head>
+<body>
+  <div id="app"><div class="splash">Loading...</div></div>
+  <script type="module" src="main.js"></script>
+</body>
+</html>

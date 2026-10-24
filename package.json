@@ -1,0 +1,16 @@
+{
+  "name": "money-manager",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node tools/serve.mjs src 8012",
+    "build": "node build.mjs",
+    "preview": "node tools/serve.mjs dist 8013",
+    "test": "node --test",
+    "icons": "node tools/makeIcons.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}

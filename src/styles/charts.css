@@ -1,0 +1,126 @@
+/* Shared chart styles (pie, bars, table). Every color is a theme variable, so dark mode needs nothing extra. */
+.pie-chart {
+  display: block;
+  width: min(100%, 220px);
+  height: auto;
+  margin: 0 auto;
+}
+
+.pie-slice--plain {
+  stroke: var(--color-text-muted); /* "Other" and categories without a color */
+}
+
+.pie-center-label {
+  fill: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.pie-center-value {
+  fill: var(--color-text);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+}
+
+.pie-center-value--long {
+  font-size: var(--font-size-md); /* long totals must stay inside the ring */
+}
+
+.bar-chart-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.bar-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.chart-grid {
+  stroke: var(--color-border);
+  stroke-width: 1;
+}
+
+.chart-axis {
+  stroke: var(--color-text-muted);
+  stroke-width: 1;
+}
+
+.chart-label {
+  fill: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.bar--income {
+  fill: var(--color-income);
+}
+
+.bar--expense {
+  fill: var(--color-expense);
+}
+
+.bar--grow {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: bar-grow var(--duration) var(--ease) both;
+}
+
+@keyframes bar-grow {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar--grow { animation: none; }
+}
+
+.chart-key {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.chart-key-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.chart-key-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--radius-pill);
+}
+
+.chart-key-dot--income { background: var(--color-income); }
+.chart-key-dot--expense { background: var(--color-expense); }
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.data-table caption {
+  text-align: left;
+  color: var(--color-text-muted);
+  padding-bottom: var(--space-2);
+}
+
+.data-table th,
+.data-table td {
+  padding: var(--space-2) var(--space-1);
+  border-top: 1px solid var(--color-border);
+  text-align: left;
+  font-weight: 400;
+}
+
+.data-table tbody th { overflow-wrap: anywhere; }
+
+.data-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
