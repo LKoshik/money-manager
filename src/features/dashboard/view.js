@@ -1,27 +1,19 @@
 /** The Home screen: total, this month, accounts, recent transactions. */
 
 import { el } from '../../ui/dom.js';
-import { icon } from '../../ui/icons.js';
 import { emptyState } from '../../ui/emptyState.js';
 import { totalCard } from '../../ui/totalCard.js';
 import { openAccountSheet } from '../../ui/accountSheet.js';
-import { navigate } from '../../ui/router.js';
 import { formatMonthLabel } from '../../core/dateLabels.js';
 import { toMonthKey } from '../../core/dates.js';
 import { buildHomeModel } from './logic.js';
 import { monthCard, accountStrip } from './summaryCards.js';
 import { recentList } from './recentList.js';
-import { moreLinks } from './moreLinks.js';
 import { owedLine } from './owedLine.js';
 
-/** Month name on the left, the Settings button on the right. */
+/** The month name, so it is clear which month the cards below talk about. */
 function homeHeader(now) {
-  const settings = el(
-    'button',
-    { className: 'icon-btn', attrs: { type: 'button', 'aria-label': 'Settings' }, on: { click: () => navigate('/settings') } },
-    icon('sliders'),
-  );
-  return el('div', { className: 'home-header' }, el('span', { className: 'muted', text: formatMonthLabel(toMonthKey(now.toISOString()), true) }), settings);
+  return el('div', { className: 'home-header' }, el('span', { className: 'muted', text: formatMonthLabel(toMonthKey(now.toISOString()), true) }));
 }
 
 function buildNoAccounts(hasArchived) {
@@ -56,6 +48,5 @@ export function buildView(state, now = new Date()) {
     monthCard(model.month),
     accountStrip(model.accounts),
     recentList(model),
-    moreLinks(state),
   );
 }

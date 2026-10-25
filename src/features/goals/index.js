@@ -7,6 +7,7 @@ export const icon = 'flag';
 export const route = '/goals';
 export const order = 80;
 export const nav = false;
+export const menu = 30;
 
 /**
  * Draw the Goals screen, and draw it again when the data changes.

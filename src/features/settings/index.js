@@ -6,6 +6,7 @@ export const icon = 'sliders';
 export const route = '/settings';
 export const order = 60;
 export const nav = false;
+export const menu = 90;
 
 /**
  * Draw the Settings screen, and draw it again when data or settings change.

@@ -9,6 +9,8 @@
  *   nav        false = no tab (reach it from a link)  (default true)
  *   tabLabel   a shorter name for the tab bar (default: title)
  *   quickAction  { title, icon?, open() }  for the big "+" button (only one feature may have it)
+ *   menu       number = the feature is listed in the side menu (drawer); smaller numbers come first
+ *   menuVisible  (state) => boolean, hides the menu row when it is false (default: always shown)
  */
 
 import { ICON_NAMES } from './icons.js';
@@ -29,6 +31,8 @@ function checkFeature(feature) {
   }
   if (!feature.route.startsWith('/')) throw new Error(`${name}: route must start with "/"`);
   if (!ICON_NAMES.includes(feature.icon)) throw new Error(`${name}: unknown icon "${feature.icon}"`);
+  if (feature.menu !== undefined && typeof feature.menu !== 'number') throw new Error(`${name}: "menu" must be a number`);
+  if (feature.menuVisible !== undefined && typeof feature.menuVisible !== 'function') throw new Error(`${name}: "menuVisible" must be a function`);
   const action = feature.quickAction;
   if (!action) return;
   if (typeof action.title !== 'string' || typeof action.open !== 'function') {
@@ -48,8 +52,8 @@ function checkUnique(features, field) {
 /**
  * Build the registry.
  * @param {object[]} modules  The feature modules (from features/index.js).
- * @returns {{features: object[], tabs: object[], quickAction: object|null}}
- *   features and tabs are sorted by "order".
+ * @returns {{features: object[], tabs: object[], quickAction: object|null, menu: object[]}}
+ *   features and tabs are sorted by "order"; menu holds the features of the side menu, sorted by their "menu" number.
  * @throws {Error} With a clear message if a feature is wrong.
  */
 export function buildRegistry(modules) {
@@ -68,5 +72,16 @@ export function buildRegistry(modules) {
     features,
     tabs: features.filter((feature) => feature.nav),
     quickAction: withAction[0]?.quickAction ?? null,
+    menu: features.filter((feature) => typeof feature.menu === 'number').sort((a, b) => a.menu - b.menu || a.title.localeCompare(b.title)),
   };
+}
+
+/**
+ * The menu rows to show right now.
+ * @param {object[]} menu  From buildRegistry().
+ * @param {object} state  The store state (rows may depend on a setting).
+ * @returns {object[]}
+ */
+export function visibleMenu(menu, state) {
+  return menu.filter((feature) => !feature.menuVisible || feature.menuVisible(state));
 }

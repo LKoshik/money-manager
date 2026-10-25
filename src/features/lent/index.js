@@ -7,6 +7,7 @@ export const icon = 'swap';
 export const route = '/lent';
 export const order = 90;
 export const nav = false;
+export const menu = 40;
 
 /**
  * Draw the Lent & borrowed screen, and draw it again when the data changes.

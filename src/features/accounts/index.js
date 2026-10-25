@@ -8,6 +8,7 @@ export const icon = 'wallet';
 export const route = '/accounts';
 export const order = 50;
 export const nav = false;
+export const menu = 10;
 
 /**
  * Draw the Accounts screen, and draw it again when the data changes.

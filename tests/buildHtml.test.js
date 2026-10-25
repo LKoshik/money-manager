@@ -16,7 +16,7 @@ test('CSS order: global files first, then features in registry order', () => {
   assert.equal(paths[0], 'styles/tokens.css');
   assert.deepEqual(paths.slice(-2), ['features/dashboard/styles.css', 'features/reports/styles.css']);
   const globals = paths.filter((p) => p.startsWith('styles/')).map((p) => p.slice(7, -4));
-  assert.equal(globals.join(' '), 'tokens theme-light theme-dark base layout components lists overlays numpad forms charts');
+  assert.equal(globals.join(' '), 'tokens theme-light theme-dark base layout components lists overlays drawer numpad forms charts');
 });
 
 test('makeHtml inlines CSS and JS and removes the development links', () => {

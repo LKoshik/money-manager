@@ -8,6 +8,9 @@ export const icon = 'repeat';
 export const route = '/recurring';
 export const order = 70;
 export const nav = false;
+export const menu = 20;
+/** The Recurring row is hidden while recurring transactions are switched off in Settings. */
+export const menuVisible = (state) => state.settings.recurringEnabled;
 
 /**
  * Draw the Recurring screen, and draw it again when the data changes.

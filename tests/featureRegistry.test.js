@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildRegistry } from '../src/ui/featureRegistry.js';
+import { buildRegistry, visibleMenu } from '../src/ui/featureRegistry.js';
 
 const feature = (overrides = {}) => ({
   id: 'home',
@@ -58,4 +58,27 @@ test('duplicate ids or routes, no home, two quick actions', () => {
     () => buildRegistry([feature({ quickAction: action }), feature({ id: 'x', route: '/x', quickAction: action })]),
     /Only one feature/,
   );
+});
+
+test('menu: features with a menu number are listed in that order; the rest are not', () => {
+  const list = [
+    feature(),
+    feature({ id: 'b', route: '/b', title: 'B', nav: false, menu: 20 }),
+    feature({ id: 'a', route: '/a', title: 'A', nav: false, menu: 10 }),
+    feature({ id: 'c', route: '/c', title: 'C', nav: false }),
+  ];
+  assert.deepEqual(buildRegistry(list).menu.map((f) => f.id), ['a', 'b']);
+  assert.deepEqual(buildRegistry([feature()]).menu, []);
+});
+
+test('menu: a row can hide itself with menuVisible(state)', () => {
+  const list = [feature(), feature({ id: 'r', route: '/r', nav: false, menu: 1, menuVisible: (state) => state.on }), feature({ id: 'g', route: '/g', nav: false, menu: 2 })];
+  const { menu } = buildRegistry(list);
+  assert.deepEqual(visibleMenu(menu, { on: false }).map((f) => f.id), ['g']);
+  assert.deepEqual(visibleMenu(menu, { on: true }).map((f) => f.id), ['r', 'g']);
+});
+
+test('menu: wrong types give a clear error', () => {
+  assert.throws(() => buildRegistry([feature({ menu: 'first' })]), /"menu" must be a number/);
+  assert.throws(() => buildRegistry([feature({ menuVisible: true })]), /"menuVisible" must be a function/);
 });

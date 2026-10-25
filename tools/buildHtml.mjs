@@ -2,7 +2,7 @@
 
 /** Global CSS files, in the order the final page needs them. */
 export const GLOBAL_CSS = [
-  'tokens', 'theme-light', 'theme-dark', 'base', 'layout', 'components', 'lists', 'overlays', 'numpad', 'forms', 'charts',
+  'tokens', 'theme-light', 'theme-dark', 'base', 'layout', 'components', 'lists', 'overlays', 'drawer', 'numpad', 'forms', 'charts',
 ].map((name) => `styles/${name}.css`);
 
 /**
