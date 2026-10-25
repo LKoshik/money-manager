@@ -5,6 +5,7 @@
 
 import { createBaseRepo, withTransaction, promisify } from './baseRepo.js';
 import { validateCategory, normalizeText } from '../core/validate.js';
+import { CATEGORY_REFERENCES, referenceStores, isReferenced } from './references.js';
 
 const base = createBaseRepo('categories', validateCategory);
 const byName = (a, b) => a.name.localeCompare(b.name);
@@ -59,19 +60,18 @@ export const categoriesRepo = {
   unarchive: (id) => base.update(id, { archived: false }),
 
   /**
-   * "Delete" a category the safe way. With no transactions it is really
+   * "Delete" a category the safe way. When nothing uses it (no transactions, no recurring rules) it is really
    * deleted (and its budget with it). Otherwise it is archived.
    * @param {string} id
    * @returns {Promise<'deleted'|'archived'>}
    */
   removeOrArchive(id) {
-    return withTransaction(['categories', 'transactions', 'budgets'], 'readwrite', async (tx) => {
+    return withTransaction(['categories', 'budgets', ...referenceStores(CATEGORY_REFERENCES)], 'readwrite', async (tx) => {
       const categories = tx.objectStore('categories');
       const category = await promisify(categories.get(id));
       if (!category) throw new Error(`categories: item not found (${id})`);
 
-      const used = await promisify(tx.objectStore('transactions').index('categoryId').count(id));
-      if (used > 0) {
+      if (await isReferenced(tx, CATEGORY_REFERENCES, id)) {
         await promisify(categories.put({ ...category, archived: true }));
         return 'archived';
       }

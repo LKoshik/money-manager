@@ -4,7 +4,7 @@
  * screen redraws with fresh data. Screens never talk to data/ directly.
  */
 
-import { store } from './store.js';
+import { LOADERS, refresh, action } from './loaders.js';
 import { accountsRepo } from '../data/accountsRepo.js';
 import { categoriesRepo } from '../data/categoriesRepo.js';
 import { transactionsRepo } from '../data/transactionsRepo.js';
@@ -14,29 +14,6 @@ import { seedIfFirstLaunch } from '../data/seed.js';
 import { requestPersistentStorage } from '../data/db.js';
 import { getStorageProtection } from '../data/storage.js';
 import { importBackup, markBackupDone, createBackupFile, createCsvFile } from '../data/backup.js';
-
-const LOADERS = {
-  accounts: () => accountsRepo.list({ includeArchived: true }),
-  categories: () => categoriesRepo.list({ includeArchived: true }),
-  transactions: () => transactionsRepo.getAll(),
-  budgets: () => budgetsRepo.list(),
-  settings: () => settingsRepo.getAll(),
-};
-
-/** Reload some lists from the database into the store. */
-async function refresh(keys) {
-  const values = await Promise.all(keys.map((key) => LOADERS[key]()));
-  store.setState(Object.fromEntries(keys.map((key, index) => [key, values[index]])));
-}
-
-/** Make an action: run the work, then refresh the lists it changed. */
-function action(keys, work) {
-  return async (...args) => {
-    const result = await work(...args);
-    await refresh(keys);
-    return result;
-  };
-}
 
 /**
  * Start the app's data: add default categories on first launch, ask the
@@ -111,3 +88,12 @@ export async function protectStorage() {
   await requestPersistentStorage();
   return getStorageProtection();
 }
+
+// Recurring rules live in their own file to keep this one short.
+export * from './recurringActions.js';
+
+// Goals live in their own file too.
+export * from './goalActions.js';
+
+// Lent / borrowed money lives in its own file too.
+export * from './loanActions.js';

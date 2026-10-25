@@ -7,11 +7,12 @@
 import { DB_VERSION } from './db.js';
 import { withTransaction, promisify, putAll } from './baseRepo.js';
 import { BACKUP_APP_ID, validateBackup } from '../core/validateBackup.js';
+import { backupStoreNames, listsOf } from '../core/backupStores.js';
 import { buildCsv } from '../core/csv.js';
 import { toDayKey } from '../core/dates.js';
 import { settingsRepo } from './settingsRepo.js';
 
-const DATA_STORES = ['accounts', 'categories', 'transactions', 'budgets'];
+const DATA_STORES = backupStoreNames(); // one table decides what is in a backup
 
 /** Thrown when a backup file cannot be used. "errors" lists the problems. */
 export class BackupError extends Error {
@@ -97,14 +98,14 @@ function replaceAllData(data) {
  * Import a backup file. It REPLACES all data in the app, so the screen must
  * ask the person to confirm first. The file is fully checked before anything changes.
  * @param {string} text  The content of the JSON file.
- * @returns {Promise<{accounts: number, categories: number, transactions: number, budgets: number}>}
- *   How many items were imported.
+ * @returns {Promise<Object<string, number>>} How many items were imported, per store.
  * @throws {BackupError} If the file is not a valid backup.
  */
 export async function importBackup(text) {
   const backup = parseBackupText(text);
   const errors = validateBackup(backup, DB_VERSION);
   if (errors.length > 0) throw new BackupError(errors);
-  await replaceAllData(backup.data);
-  return Object.fromEntries(DATA_STORES.map((name) => [name, backup.data[name].length]));
+  const lists = listsOf(backup); // stores missing from an older file are empty lists
+  await replaceAllData(lists);
+  return Object.fromEntries(DATA_STORES.map((name) => [name, lists[name].length]));
 }

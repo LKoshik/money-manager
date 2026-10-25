@@ -11,6 +11,8 @@ import { toMonthKey } from '../../core/dates.js';
 import { buildHomeModel } from './logic.js';
 import { monthCard, accountStrip } from './summaryCards.js';
 import { recentList } from './recentList.js';
+import { moreLinks } from './moreLinks.js';
+import { owedLine } from './owedLine.js';
 
 /** Month name on the left, the Settings button on the right. */
 function homeHeader(now) {
@@ -35,7 +37,7 @@ function buildNoAccounts(hasArchived) {
 
 /**
  * Build the Home screen.
- * @param {{accounts: object[], categories: object[], transactions: object[]}} state
+ * @param {{accounts: object[], categories: object[], transactions: object[], settings: object}} state
  * @param {Date} [now=new Date()]
  * @returns {HTMLElement}
  */
@@ -50,8 +52,10 @@ export function buildView(state, now = new Date()) {
     { className: 'stack' },
     header,
     totalCard({ total: model.total }),
+    owedLine(model.owed),
     monthCard(model.month),
     accountStrip(model.accounts),
     recentList(model),
+    moreLinks(state),
   );
 }

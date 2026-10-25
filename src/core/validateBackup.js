@@ -3,28 +3,17 @@
  * whole file, so a damaged file can never ruin the data already in the app.
  */
 
-import {
-  validateAccount,
-  validateCategory,
-  validateTransaction,
-  validateBudget,
-} from './validate.js';
+import { storesInFile, listsOf } from './backupStores.js';
+import { checkLoanLinks } from './validateLoanLinks.js';
 
 /** The id written into every backup file made by this app. */
 export const BACKUP_APP_ID = 'money-manager';
 const MAX_ERRORS = 20;
 
-const ENTITY_VALIDATORS = [
-  ['accounts', validateAccount],
-  ['categories', validateCategory],
-  ['transactions', validateTransaction],
-  ['budgets', validateBudget],
-];
-
 /** Check each item, and check that ids are not used twice. */
-function checkEntities(data, errors) {
-  for (const [name, validate] of ENTITY_VALIDATORS) {
-    const list = data[name];
+function checkEntities(backup, errors) {
+  for (const { name, validator: validate } of storesInFile(backup.schemaVersion)) {
+    const list = backup.data[name];
     if (!Array.isArray(list)) {
       errors.push(`data.${name} must be a list`);
       continue;
@@ -38,7 +27,7 @@ function checkEntities(data, errors) {
   }
 }
 
-/** Check that every link points to something that exists. */
+/** Check that every link points to something that exists. (Recurring rules are not checked: a missing account just blocks the rule.) */
 function checkLinks(data, errors) {
   const accountIds = new Set(data.accounts.map((a) => a.id));
   const categoryIds = new Set(data.categories.map((c) => c.id));
@@ -57,6 +46,11 @@ function checkLinks(data, errors) {
     if (budgeted.has(budget.categoryId)) errors.push(`budgets[${index}]: second budget for one category`);
     budgeted.add(budget.categoryId);
   });
+  const goalIds = new Set(data.goals.map((goal) => goal.id));
+  data.contributions.forEach((item, index) => {
+    if (!goalIds.has(item.goalId)) errors.push(`contributions[${index}]: goal not found`);
+  });
+  checkLoanLinks(data, accountIds, errors);
 }
 
 /** Check the outer part of the file (who made it, which version). */
@@ -80,9 +74,9 @@ export function validateBackup(backup, maxVersion) {
   if (typeof backup !== 'object' || backup === null) return ['the file is empty or not an object'];
   const errors = [];
   checkHeader(backup, maxVersion, errors);
-  if (errors.length === 0) checkEntities(backup.data, errors);
+  if (errors.length === 0) checkEntities(backup, errors);
   // Link checks only make sense when every item has the right shape.
-  if (errors.length === 0) checkLinks(backup.data, errors);
+  if (errors.length === 0) checkLinks(listsOf(backup), errors);
   if (errors.length <= MAX_ERRORS) return errors;
   return [...errors.slice(0, MAX_ERRORS), `...and ${errors.length - MAX_ERRORS} more problems`];
 }

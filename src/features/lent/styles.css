@@ -1,0 +1,106 @@
+/* Lent & borrowed screen and sheets. Only shared variables are used, so dark mode needs nothing extra. */
+.lent-total {
+  align-items: center;
+}
+
+.lent-hint {
+  text-align: center;
+  font-size: var(--font-size-sm);
+}
+
+.loan-card {
+  gap: var(--space-2);
+}
+
+.loan-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.loan-title,
+.loan-status {
+  font-variant-numeric: tabular-nums;
+}
+
+.loan-status {
+  font-weight: 600;
+}
+
+.loan-status--settled {
+  color: var(--color-income);
+}
+
+.loan-sub,
+.repay-sub {
+  font-size: var(--font-size-sm);
+}
+
+.loan-due {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.loan-due--overdue {
+  color: var(--color-expense);
+}
+
+.repay-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 56px;
+  padding: var(--space-2) var(--space-4);
+}
+
+.repay-row + .repay-row {
+  border-top: 1px solid var(--color-border);
+}
+
+.repay-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.repay-title {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-income);
+}
+
+.repay-delete {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--color-text-muted);
+}
+
+.repay-delete:active {
+  background: var(--color-surface-2);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.chip:active {
+  background: var(--color-accent-soft);
+}

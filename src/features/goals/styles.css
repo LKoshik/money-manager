@@ -1,0 +1,147 @@
+/* Goals screen and sheets. Only shared variables are used, so dark mode needs nothing extra. */
+.goals-note {
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.goal-summary {
+  gap: var(--space-3);
+}
+
+.goal-summary-title {
+  font-size: var(--font-size-lg);
+}
+
+.goal-card {
+  width: 100%;
+  min-height: 96px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+}
+
+.goal-card + .goal-card {
+  border-top: 1px solid var(--color-border);
+}
+
+.goal-card:active {
+  background: var(--color-surface-2);
+}
+
+.goal-card--archived {
+  opacity: 0.7;
+}
+
+.goal-card-top,
+.goal-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.goal-head-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.goal-icon {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  background: color-mix(in srgb, var(--goal-color, var(--color-accent)) 22%, var(--color-surface-2));
+}
+
+.goal-card-name {
+  flex: 1;
+  min-width: 0; /* long names are cut with ... instead of pushing the layout */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.goal-bar {
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-2);
+  overflow: hidden;
+}
+
+.goal-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
+  transition: width var(--duration) var(--ease);
+}
+
+.goal-bar-fill--reached { background: var(--color-income); }
+
+.goal-progress,
+.goal-pace,
+.goal-contrib-sub {
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+.goal-pace { font-weight: 600; }
+.goal-pace--reached { color: var(--color-income); }
+.goal-pace--overdue { color: var(--color-expense); }
+
+.goal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.goal-hint {
+  text-align: center;
+}
+
+.goal-contrib {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 56px;
+  padding: var(--space-2) var(--space-4);
+}
+
+.goal-contrib + .goal-contrib {
+  border-top: 1px solid var(--color-border);
+}
+
+.goal-contrib-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.goal-contrib-title {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.goal-contrib-title--add { color: var(--color-income); }
+.goal-contrib-title--withdraw { color: var(--color-expense); }
+
+.goal-contrib-delete {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--color-text-muted);
+}
+
+.goal-contrib-delete:active {
+  background: var(--color-surface-2);
+}

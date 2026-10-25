@@ -4,7 +4,7 @@ import { el } from './dom.js';
 import { button } from './button.js';
 import { choiceGrid } from './choiceGrid.js';
 import { textField } from './formField.js';
-import { ACCOUNT_TYPE_INFO } from '../core/accountList.js';
+import { accountGrid } from './accountGrid.js';
 import { formatAmountText } from '../core/amountInput.js';
 import { selectableAccounts, selectableCategories } from '../core/transactionDraft.js';
 
@@ -12,11 +12,6 @@ const TYPE_LABELS = { expense: 'Expense', income: 'Income', transfer: 'Transfer'
 
 const section = (title, content) =>
   el('div', { className: 'form-section' }, el('h3', { className: 'form-section-title', text: title }), content);
-
-function accountGrid({ accounts, selectedId, onSelect, ariaLabel }) {
-  const items = accounts.map((account) => ({ id: account.id, label: account.name, icon: ACCOUNT_TYPE_INFO[account.type].emoji }));
-  return choiceGrid({ items, selectedId, onSelect, ariaLabel, columns: 3 });
-}
 
 /** The amount again, small, with a "Change" link back to the number pad. */
 function amountSummary(draft, onEditAmount) {
@@ -78,7 +73,8 @@ function moreDetails(draft, onChange) {
 /**
  * Build the details step.
  * @param {{draft: object, accounts: object[], categories: object[], onChange: (patch: object) => void,
- *   onNewCategory: () => void, onEditAmount: () => void, onCreateAccount: () => void}} config
+ *   onNewCategory: () => void, onEditAmount: () => void, onCreateAccount: () => void,
+ *   details?: HTMLElement}} config  "details" replaces the Date and note block (recurring rules use their own).
  *   onChange gets the fields that changed. Tapping a tile does NOT redraw the form.
  * @returns {HTMLElement}
  */
@@ -91,5 +87,5 @@ export function buildTransactionForm(config) {
           categorySection(config),
           section('Account', accountGrid({ accounts: selectableAccounts(accounts, [draft.accountId]), selectedId: draft.accountId, ariaLabel: 'Account', onSelect: (accountId) => onChange({ accountId }) })),
         ];
-  return el('div', { className: 'stack' }, amountSummary(draft, onEditAmount), ...sections, moreDetails(draft, onChange));
+  return el('div', { className: 'stack' }, amountSummary(draft, onEditAmount), ...sections, config.details ?? moreDetails(draft, onChange));
 }

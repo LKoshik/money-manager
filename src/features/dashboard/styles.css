@@ -106,3 +106,12 @@
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
+
+.owed-line {
+  width: 100%;
+  min-height: 44px;
+  text-align: center;
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}

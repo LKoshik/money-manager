@@ -87,3 +87,11 @@
   font-size: var(--font-size-xxl);
   font-variant-numeric: tabular-nums;
 }
+
+/* Small icon after a title (a transaction made by a recurring rule). */
+.list-row-badge {
+  display: inline-block;
+  margin-left: var(--space-1);
+  vertical-align: -2px;
+  color: var(--color-text-muted);
+}

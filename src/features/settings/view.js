@@ -2,6 +2,7 @@
 
 import { el } from '../../ui/dom.js';
 import { themeSection } from './themeSection.js';
+import { recurringSection } from './recurringSection.js';
 import { backupSection } from './backupSection.js';
 import { storageSection } from './storageSection.js';
 import { categoriesSection } from './categoriesSection.js';
@@ -19,6 +20,7 @@ export function buildView(state, local, handlers) {
     'div',
     { className: 'stack' },
     themeSection(state.settings),
+    recurringSection(state.settings),
     backupSection(state.settings, hasData),
     storageSection(local.storage, handlers.onProtect),
     categoriesSection(state),

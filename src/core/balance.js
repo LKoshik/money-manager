@@ -4,7 +4,10 @@
  * We NEVER store a current balance. A stored balance can go wrong
  * (for example after an edit or a delete). So we always calculate it:
  *   opening balance + income - expense + transfers in - transfers out
+ * Loans and repayments move balances too: calculateBalancesWithLoans() adds them on top.
  */
+
+import { getLoanBalanceEffects } from './loanEffects.js';
 
 /**
  * Say how one transaction changes account balances.
@@ -44,6 +47,23 @@ export function calculateBalances(accounts, transactions) {
       // Skip accounts we were not asked about.
       if (Object.hasOwn(balances, accountId)) balances[accountId] += change;
     }
+  }
+  return balances;
+}
+
+/**
+ * Like calculateBalances(), plus the effect of lent / borrowed money. Loans are NOT transactions,
+ * so they are a separate input: reports, budgets and CSV never see them.
+ * @param {Array<{id: string, openingBalance: number}>} accounts
+ * @param {Array<object>} transactions
+ * @param {Array<object>} [loans=[]]
+ * @param {Array<object>} [repayments=[]]
+ * @returns {Object<string, number>} Paise by account id.
+ */
+export function calculateBalancesWithLoans(accounts, transactions, loans = [], repayments = []) {
+  const balances = calculateBalances(accounts, transactions);
+  for (const [accountId, change] of getLoanBalanceEffects(loans, repayments)) {
+    if (Object.hasOwn(balances, accountId)) balances[accountId] += change;
   }
   return balances;
 }

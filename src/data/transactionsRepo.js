@@ -5,31 +5,10 @@
  */
 
 import { createBaseRepo } from './baseRepo.js';
-import { validateTransaction, normalizeText } from '../core/validate.js';
+import { validateTransaction } from '../core/validate.js';
+import { cleanTransactionFields } from './transactionFields.js';
 
 const base = createBaseRepo('transactions', validateTransaction);
-
-/** Turn any date input into one standard ISO string. A bad date is left as it is, so validation reports it. */
-function toIsoDate(value) {
-  if (value == null) return value; // new Date(null) would silently become 1970
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value : date.toISOString();
-}
-
-/** Keep only the fields we store, and fix fields that do not fit the type. */
-function cleanFields(input) {
-  const isTransfer = input.type === 'transfer';
-  return {
-    type: input.type,
-    amount: input.amount,
-    date: toIsoDate(input.date),
-    accountId: input.accountId,
-    toAccountId: isTransfer ? input.toAccountId : null,
-    categoryId: isTransfer ? null : input.categoryId,
-    note: normalizeText(input.note ?? ''),
-    tags: input.tags ?? [],
-  };
-}
 
 export const transactionsRepo = {
   /**
@@ -43,7 +22,7 @@ export const transactionsRepo = {
   /**
    * Create a transaction.
    * @param {{type: string, amount: number, date: string|Date, accountId: string,
-   *   toAccountId?: string, categoryId?: string, note?: string, tags?: string[]}} input
+   *   toAccountId?: string, categoryId?: string, note?: string, tags?: string[], recurringId?: string|null}} input
    *   amount is a positive number of paise. For a transfer, give toAccountId and no category.
    * @returns {Promise<object>} The saved transaction.
    */
@@ -51,7 +30,7 @@ export const transactionsRepo = {
     const now = new Date().toISOString();
     return base.put({
       id: crypto.randomUUID(),
-      ...cleanFields(input),
+      ...cleanTransactionFields(input),
       createdAt: now,
       updatedAt: now,
     });
@@ -68,7 +47,7 @@ export const transactionsRepo = {
     if (!current) throw new Error(`transactions: item not found (${id})`);
     return base.put({
       ...current,
-      ...cleanFields({ ...current, ...changes }),
+      ...cleanTransactionFields({ ...current, ...changes }),
       updatedAt: new Date().toISOString(),
     });
   },

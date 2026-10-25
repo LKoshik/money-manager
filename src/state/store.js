@@ -50,5 +50,10 @@ export const store = createStore({
   categories: [],
   transactions: [],
   budgets: [],
+  recurring: [],
+  goals: [],
+  contributions: [],
+  loans: [],
+  repayments: [],
   settings: { ...SETTING_DEFAULTS },
 });

@@ -10,6 +10,7 @@ import { registerServiceWorker } from './ui/pwaUpdate.js';
 import { emptyState } from './ui/emptyState.js';
 import { store } from './state/store.js';
 import { initApp } from './state/actions.js';
+import { runAndAnnounce, runWhenListsChange } from './ui/recurringRunner.js';
 
 /** Stop with a clear message if the browser cannot run the app. */
 function checkEnvironment() {
@@ -35,6 +36,15 @@ function showStartError(root, error, retry) {
   );
 }
 
+/** Create due recurring transactions now, and whenever the app comes back to the screen. */
+function startRecurring() {
+  runAndAnnounce(); // a phone app cannot run in the background, so we catch up when it opens
+  runWhenListsChange();
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') runAndAnnounce();
+  });
+}
+
 async function start(root) {
   try {
     checkEnvironment();
@@ -44,6 +54,7 @@ async function start(root) {
     const shell = buildShell(root, registry);
     startRouter({ features: registry.features, outlet: shell.outlet, onChange: shell.update });
     registerServiceWorker();
+    startRecurring();
   } catch (error) {
     showStartError(root, error, () => start(root));
   }

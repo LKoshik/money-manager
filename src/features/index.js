@@ -9,3 +9,6 @@ export * as budgets from './budgets/index.js';
 export * as reports from './reports/index.js';
 export * as accounts from './accounts/index.js';
 export * as settings from './settings/index.js';
+export * as recurring from './recurring/index.js';
+export * as goals from './goals/index.js';
+export * as lent from './lent/index.js';

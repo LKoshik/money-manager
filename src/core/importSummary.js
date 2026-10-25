@@ -1,19 +1,17 @@
 /** Words for the result of a backup import (success counts or a list of problems). */
 
-const PARTS = [
-  ['accounts', 'account', 'accounts'],
-  ['categories', 'category', 'categories'],
-  ['transactions', 'transaction', 'transactions'],
-  ['budgets', 'budget', 'budgets'],
-];
+import { BACKUP_STORES } from './backupStores.js';
 
 /**
  * Say what was imported.
- * @param {{accounts: number, categories: number, transactions: number, budgets: number}} counts
+ * @param {Object<string, number>} counts  Items imported per store.
  * @returns {string} Example: "2 accounts, 17 categories, 1 transaction, 0 budgets"
  */
 export function summarizeImport(counts) {
-  return PARTS.map(([key, one, many]) => `${counts[key] ?? 0} ${counts[key] === 1 ? one : many}`).join(', ');
+  // Stores added in later versions are mentioned only when they hold something.
+  return BACKUP_STORES.filter((store) => store.since === 1 || counts[store.name] > 0)
+    .map(({ name, label: [one, many] }) => `${counts[name] ?? 0} ${counts[name] === 1 ? one : many}`)
+    .join(', ');
 }
 
 /**

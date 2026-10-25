@@ -3,7 +3,8 @@
  * Kept in core/ (no DOM) so it can be unit-tested.
  */
 
-import { calculateBalances, calculateTotalBalance } from './balance.js';
+import { calculateBalancesWithLoans, calculateTotalBalance } from './balance.js';
+import { buildLoanRows, loanTotals } from './loanList.js';
 import { splitAccounts } from './accountList.js';
 import { getCurrentMonthRange } from './dates.js';
 import { getPeriodTotals } from './reports.js';
@@ -39,19 +40,20 @@ export function spentPercent({ income, expense }) {
 
 /**
  * Build the Home model.
- * @param {{accounts: object[], transactions: object[]}} state
+ * @param {{accounts: object[], transactions: object[], loans?: object[], repayments?: object[]}} state
  * @param {Date} [now=new Date()] Passed in so tests can control time.
  * @returns {{total: number, month: {income: number, expense: number, net: number, spentPercent: number|null},
- *   accounts: Array<{account: object, balance: number}>, recent: object[]}}
- *   total and accounts count active accounts only.
+ *   accounts: Array<{account: object, balance: number}>, recent: object[], owed: {toYou: number, youOwe: number}}}
+ *   total and accounts count active accounts only and include loans; the month card never does.
  */
-export function buildDashboardModel({ accounts, transactions }, now = new Date()) {
-  const balances = calculateBalances(accounts, transactions);
+export function buildDashboardModel({ accounts, transactions, loans = [], repayments = [] }, now = new Date()) {
+  const balances = calculateBalancesWithLoans(accounts, transactions, loans, repayments);
   const totals = getPeriodTotals(transactions, getCurrentMonthRange(now));
   return {
     total: calculateTotalBalance(accounts, balances),
     month: { ...totals, spentPercent: spentPercent(totals) },
     accounts: splitAccounts(accounts).active.map((account) => ({ account, balance: balances[account.id] })),
     recent: pickRecent(transactions),
+    owed: loanTotals(buildLoanRows(loans, repayments)),
   };
 }

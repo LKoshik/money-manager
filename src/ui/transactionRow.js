@@ -25,19 +25,21 @@ function describeAmount(txn) {
 /**
  * Make a transaction row.
  * @param {{txn: object, category?: object, account?: object, toAccount?: object,
- *   onClick?: () => void}} config  Missing lookups show "Unknown" instead of breaking.
+ *   onClick?: () => void, subtitle?: string}} config  Missing lookups show "Unknown" instead of breaking.
+ *   "subtitle" replaces the second line (recurring rules show their schedule there).
  * @returns {HTMLButtonElement}
  */
-export function transactionRow({ txn, category, account, toAccount, onClick }) {
+export function transactionRow({ txn, category, account, toAccount, onClick, subtitle }) {
   const info = describe(txn, category, account, toAccount);
   const amount = describeAmount(txn);
   return listRow({
     icon: info.icon,
     color: info.color,
     title: info.title,
-    subtitle: info.subtitle.filter(Boolean).join(' · '),
+    subtitle: subtitle ?? info.subtitle.filter(Boolean).join(' · '),
     amount: amount.text,
     amountClass: amount.className,
+    badge: txn.recurringId ? 'repeat' : undefined, // made by a recurring rule
     onClick,
   });
 }

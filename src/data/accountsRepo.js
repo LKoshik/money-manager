@@ -5,6 +5,7 @@
 
 import { createBaseRepo, withTransaction, promisify } from './baseRepo.js';
 import { validateAccount, normalizeText } from '../core/validate.js';
+import { ACCOUNT_REFERENCES, referenceStores, isReferenced } from './references.js';
 
 const base = createBaseRepo('accounts', validateAccount);
 const byCreatedAt = (a, b) => Date.parse(a.createdAt) - Date.parse(b.createdAt);
@@ -59,21 +60,18 @@ export const accountsRepo = {
   unarchive: (id) => base.update(id, { archived: false }),
 
   /**
-   * "Delete" an account the safe way: really delete it if it has no
-   * transactions, otherwise archive it.
+   * "Delete" an account the safe way: really delete it if it is not used
+   * (by transactions or recurring rules), otherwise archive it.
    * @param {string} id
    * @returns {Promise<'deleted'|'archived'>}
    */
   removeOrArchive(id) {
-    return withTransaction(['accounts', 'transactions'], 'readwrite', async (tx) => {
+    return withTransaction(['accounts', ...referenceStores(ACCOUNT_REFERENCES)], 'readwrite', async (tx) => {
       const accounts = tx.objectStore('accounts');
       const account = await promisify(accounts.get(id));
       if (!account) throw new Error(`accounts: item not found (${id})`);
 
-      const txns = tx.objectStore('transactions');
-      const sent = await promisify(txns.index('accountId').count(id));
-      const received = await promisify(txns.index('toAccountId').count(id));
-      if (sent + received === 0) {
+      if (!(await isReferenced(tx, ACCOUNT_REFERENCES, id))) {
         await promisify(accounts.delete(id));
         return 'deleted';
       }

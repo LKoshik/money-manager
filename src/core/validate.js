@@ -5,31 +5,17 @@
  * to check a file before it touches your real data. One set of rules, used everywhere.
  */
 
+import { isObject, isText, isPaise, isDateText, collect } from './validateParts.js';
+
+// Settings moved to their own file; re-exported so older imports keep working.
+export { SETTING_DEFAULTS, validateSetting } from './validateSettings.js';
+
 export const ACCOUNT_TYPES = ['cash', 'bank', 'upi', 'credit'];
 export const TRANSACTION_TYPES = ['income', 'expense', 'transfer'];
 export const CATEGORY_KINDS = ['income', 'expense'];
 export const MAX_NAME_LENGTH = 40;
 
-/** Settings we know about, and the value each has before the user changes it. */
-export const SETTING_DEFAULTS = Object.freeze({
-  theme: null, // null = not chosen yet (follow the phone)
-  lastBackupAt: null,
-  seeded: false, // true after the default categories were added
-  lastAccountId: null, // the account of the last new transaction (the Add flow starts with it)
-});
-
-const isObject = (value) => typeof value === 'object' && value !== null && !Array.isArray(value);
-const isText = (value) => typeof value === 'string' && value.trim().length > 0;
 const isName = (value) => isText(value) && value.length <= MAX_NAME_LENGTH;
-const isPaise = (value) => Number.isSafeInteger(value);
-// The shape check stops loose values like "5", which Date.parse() would accept.
-const isDateText = (value) =>
-  typeof value === 'string' && /^\d{4}-\d{2}-\d{2}/.test(value) && !Number.isNaN(Date.parse(value));
-
-/** Keep only the messages of the rules that failed. */
-function collect(rules) {
-  return rules.filter(([ok]) => !ok).map(([, message]) => message);
-}
 
 /**
  * Clean text typed by a person: remove spaces at the start and end.
@@ -100,6 +86,15 @@ function categoryRules(txn) {
 }
 
 /**
+ * The rules that depend on the type (transfer or not). Shared with recurring rules.
+ * @param {{type: string, toAccountId?: string|null, accountId?: string, categoryId?: string|null}} item
+ * @returns {Array<[boolean, string]>} Rules for collect().
+ */
+export function typeSpecificRules(item) {
+  return item.type === 'transfer' ? transferRules(item) : categoryRules(item);
+}
+
+/**
  * @param {unknown} txn
  * @returns {string[]} Problems found (empty if valid).
  */
@@ -113,11 +108,12 @@ export function validateTransaction(txn) {
     [isText(txn.accountId), 'accountId is missing'],
     [typeof txn.note === 'string', 'note must be text'],
     [Array.isArray(txn.tags) && txn.tags.every((tag) => typeof tag === 'string'), 'tags must be a list of text'],
+    // Old transactions have no recurringId (undefined counts as null).
+    [txn.recurringId == null || isText(txn.recurringId), 'recurringId must be null or an id'],
     [isDateText(txn.createdAt), 'createdAt must be an ISO date'],
     [isDateText(txn.updatedAt), 'updatedAt must be an ISO date'],
   ];
-  const typeRules = txn.type === 'transfer' ? transferRules(txn) : categoryRules(txn);
-  return collect([...common, ...typeRules]);
+  return collect([...common, ...typeSpecificRules(txn)]);
 }
 
 /**
@@ -131,20 +127,4 @@ export function validateBudget(budget) {
     [isText(budget.categoryId), 'categoryId is missing'],
     [isPaise(budget.monthlyLimit) && budget.monthlyLimit > 0, 'monthlyLimit must be a positive whole number of paise'],
   ]);
-}
-
-/**
- * @param {string} key  One of the keys in SETTING_DEFAULTS.
- * @param {unknown} value
- * @returns {string[]} Problems found (empty if valid).
- */
-export function validateSetting(key, value) {
-  if (!Object.hasOwn(SETTING_DEFAULTS, key)) return [`unknown setting: ${key}`];
-  const rules = {
-    theme: [value === null || value === 'light' || value === 'dark', 'theme must be null, "light" or "dark"'],
-    lastBackupAt: [value === null || isDateText(value), 'lastBackupAt must be null or an ISO date'],
-    seeded: [typeof value === 'boolean', 'seeded must be true or false'],
-    lastAccountId: [value === null || isText(value), 'lastAccountId must be null or an account id'],
-  };
-  return collect([rules[key]]);
 }

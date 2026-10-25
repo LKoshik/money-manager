@@ -26,6 +26,28 @@ const MIGRATIONS = [
     budgets.createIndex('categoryId', 'categoryId', { unique: true }); // one budget per category
     db.createObjectStore('settings', { keyPath: 'key' });
   },
+  function createVersion2(db) {
+    // Phase 10: recurring rules. The indexes answer "is this account/category used by a rule?".
+    const recurring = db.createObjectStore('recurring', { keyPath: 'id' });
+    recurring.createIndex('accountId', 'accountId');
+    recurring.createIndex('toAccountId', 'toAccountId');
+    recurring.createIndex('categoryId', 'categoryId');
+  },
+  function createVersion3(db) {
+    // Phase 11: savings goals and their contributions. The index finds one goal's contributions fast.
+    db.createObjectStore('goals', { keyPath: 'id' });
+    const contributions = db.createObjectStore('contributions', { keyPath: 'id' });
+    contributions.createIndex('goalId', 'goalId');
+  },
+  function createVersion4(db) {
+    // Phase 12: lent / borrowed money. The indexes answer "is this account used by a loan?"
+    // and "which repayments belong to this loan?".
+    const loans = db.createObjectStore('loans', { keyPath: 'id' });
+    loans.createIndex('accountId', 'accountId');
+    const repayments = db.createObjectStore('repayments', { keyPath: 'id' });
+    repayments.createIndex('loanId', 'loanId');
+    repayments.createIndex('accountId', 'accountId');
+  },
 ];
 
 /** The schema version of the database. It is simply how many migrations exist. */
