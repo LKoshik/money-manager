@@ -10,6 +10,8 @@ import { goalsRepo } from '../data/goalsRepo.js';
 import { contributionsRepo } from '../data/contributionsRepo.js';
 import { loansRepo } from '../data/loansRepo.js';
 import { repaymentsRepo } from '../data/repaymentsRepo.js';
+import { plansRepo } from '../data/plansRepo.js';
+import { extraIncomesRepo } from '../data/extraIncomesRepo.js';
 import { settingsRepo } from '../data/settingsRepo.js';
 
 /** One loader per store list. A new store adds ONE line. */
@@ -23,6 +25,8 @@ export const LOADERS = {
   contributions: () => contributionsRepo.list(),
   loans: () => loansRepo.list(),
   repayments: () => repaymentsRepo.list(),
+  plans: () => plansRepo.list(),
+  extraIncomes: () => extraIncomesRepo.list(),
   settings: () => settingsRepo.getAll(),
 };
 

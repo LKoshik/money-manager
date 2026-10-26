@@ -145,3 +145,19 @@
 .goal-contrib-delete:active {
   background: var(--color-surface-2);
 }
+
+/* "Available to assign" card on top of the Goals screen (planner money). */
+.assign-card {
+  gap: var(--space-2);
+}
+
+.assign-amount {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-income);
+}
+
+.assign-amount--over {
+  color: var(--color-expense);
+}

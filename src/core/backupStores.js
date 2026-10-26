@@ -9,6 +9,8 @@ import { validateAccount, validateCategory, validateTransaction, validateBudget 
 import { validateRecurring } from './validateRecurring.js';
 import { validateGoal, validateContribution } from './validateGoals.js';
 import { validateLoan, validateRepayment } from './validateLoans.js';
+import { validatePlan } from './validatePlans.js';
+import { validateExtraIncome } from './validateExtraIncome.js';
 
 export const BACKUP_STORES = [
   { name: 'accounts', validator: validateAccount, since: 1, label: ['account', 'accounts'] },
@@ -20,6 +22,8 @@ export const BACKUP_STORES = [
   { name: 'contributions', validator: validateContribution, since: 3, label: ['goal contribution', 'goal contributions'] },
   { name: 'loans', validator: validateLoan, since: 4, label: ['loan', 'loans'] },
   { name: 'repayments', validator: validateRepayment, since: 4, label: ['repayment', 'repayments'] },
+  { name: 'plans', validator: validatePlan, since: 5, label: ['plan version', 'plan versions'] },
+  { name: 'extraIncomes', validator: validateExtraIncome, since: 6, label: ['extra income', 'extra incomes'] },
 ];
 
 /** @returns {string[]} The store names, in table order. */

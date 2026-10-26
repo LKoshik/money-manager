@@ -20,7 +20,7 @@ const makeBackup = (schemaVersion, extra = {}) => ({
 const has = (errors, word) => errors.some((message) => message.includes(word));
 
 test('the table lists every store once, with since and a validator', () => {
-  assert.deepEqual(backupStoreNames(), ['accounts', 'categories', 'transactions', 'budgets', 'recurring', 'goals', 'contributions', 'loans', 'repayments']);
+  assert.deepEqual(backupStoreNames(), ['accounts', 'categories', 'transactions', 'budgets', 'recurring', 'goals', 'contributions', 'loans', 'repayments', 'plans', 'extraIncomes']);
   for (const store of BACKUP_STORES) {
     assert.equal(typeof store.validator, 'function');
     assert.ok(Number.isInteger(store.since) && store.since >= 1);

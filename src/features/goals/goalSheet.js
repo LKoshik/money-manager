@@ -7,6 +7,7 @@ import { el } from '../../ui/dom.js';
 import { openBottomSheet } from '../../ui/bottomSheet.js';
 import { store } from '../../state/store.js';
 import { buildGoalRows } from '../../core/goalList.js';
+import { availableAmount } from '../../core/stackModel.js';
 import { buildGoalMain } from './goalMain.js';
 import { buildGoalAmountStep } from './goalAmountStep.js';
 
@@ -16,7 +17,7 @@ function buildStep(session) {
   if (!goal) return el('div'); // deleted: the delete command is closing the sheet
   const mine = contributions.filter((item) => item.goalId === goal.id);
   const [row] = buildGoalRows([goal], mine);
-  return session.step === 'main' ? buildGoalMain(session, row, mine) : buildGoalAmountStep(session, row, mine);
+  return session.step === 'main' ? buildGoalMain(session, row, mine) : buildGoalAmountStep(session, row, mine, availableAmount(store.getState()));
 }
 
 function watch(session) {

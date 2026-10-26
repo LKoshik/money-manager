@@ -9,6 +9,7 @@ import { accountsRepo } from '../data/accountsRepo.js';
 import { categoriesRepo } from '../data/categoriesRepo.js';
 import { transactionsRepo } from '../data/transactionsRepo.js';
 import { budgetsRepo } from '../data/budgetsRepo.js';
+import { extraIncomesRepo } from '../data/extraIncomesRepo.js';
 import { settingsRepo } from '../data/settingsRepo.js';
 import { seedIfFirstLaunch } from '../data/seed.js';
 import { requestPersistentStorage } from '../data/db.js';
@@ -32,8 +33,8 @@ export const addTransaction = action(['transactions'], (input) => transactionsRe
 /** Change a transaction. @param {string} id @param {object} changes */
 export const updateTransaction = action(['transactions'], (id, changes) => transactionsRepo.update(id, changes));
 
-/** Delete a transaction for good. @param {string} id */
-export const deleteTransaction = action(['transactions'], (id) => transactionsRepo.remove(id));
+/** Delete a transaction for good (an extra income entry tied to it goes too). @param {string} id */
+export const deleteTransaction = action(['transactions', 'extraIncomes'], (id) => extraIncomesRepo.removeTransaction(id));
 
 /** Add an account. @param {object} input See accountsRepo.create. */
 export const addAccount = action(['accounts'], (input) => accountsRepo.create(input));
@@ -97,3 +98,7 @@ export * from './goalActions.js';
 
 // Lent / borrowed money lives in its own file too.
 export * from './loanActions.js';
+
+// The planner lives in its own file too.
+export * from './planActions.js';
+export * from './extraIncomeActions.js';

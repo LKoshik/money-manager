@@ -48,6 +48,16 @@ const MIGRATIONS = [
     repayments.createIndex('loanId', 'loanId');
     repayments.createIndex('accountId', 'accountId');
   },
+  function createVersion5(db) {
+    // Planner: one record per plan VERSION ("applies from month X"). Only one version may start in a month.
+    const plans = db.createObjectStore('plans', { keyPath: 'id' });
+    plans.createIndex('appliesFrom', 'appliesFrom', { unique: true });
+  },
+  function createVersion6(db) {
+    // Planner phase 3: extra income. Each entry is tied to ONE income transaction, so the index is unique.
+    const extraIncomes = db.createObjectStore('extraIncomes', { keyPath: 'id' });
+    extraIncomes.createIndex('transactionId', 'transactionId', { unique: true });
+  },
 ];
 
 /** The schema version of the database. It is simply how many migrations exist. */

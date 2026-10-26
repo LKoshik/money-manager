@@ -42,9 +42,11 @@ export async function saveDraft(session, saveButton, errors) {
  * @param {{transaction: object, sheet: {close: Function}}} session
  */
 export async function removeTransaction(session) {
+  // An extra income entry is tied to its income transaction, so it goes too.
+  const entry = store.getState().extraIncomes.find((item) => item.transactionId === session.transaction.id);
   const sure = await confirmDialog({
     title: 'Delete this transaction?',
-    message: 'This cannot be undone.',
+    message: entry ? `This cannot be undone. The extra income "${entry.name}" in the Planner is deleted too.` : 'This cannot be undone.',
     confirmLabel: 'Delete',
     danger: true,
   });

@@ -7,12 +7,14 @@ import { amountField } from '../../ui/amountField.js';
 import { showToast } from '../../ui/toast.js';
 import { addContribution } from '../../state/actions.js';
 import { checkNewContribution } from '../../core/contributionRules.js';
+import { checkAssign } from '../../core/stackModel.js';
 import { hasAmount } from '../../core/transactionDraft.js';
 import { textToPaise } from '../../core/amountInput.js';
 import { formatMoney } from '../../core/money.js';
 
-async function submit(session, input, contributions, confirm, errors) {
-  const problems = checkNewContribution(contributions, input); // friendly message before saving
+async function submit(session, input, { contributions, available }, confirm, errors) {
+  // Friendly messages before saving. Adding money draws from the planner's available amount (when a plan exists).
+  const problems = [...(input.type === 'add' ? checkAssign(available, input.amount) : []), ...checkNewContribution(contributions, input)];
   if (problems.length > 0) return errors.show(problems);
   confirm.disabled = true;
   try {
@@ -31,9 +33,11 @@ async function submit(session, input, contributions, confirm, errors) {
  * @param {{step: 'add'|'withdraw', goalId: string, redraw: Function}} session
  * @param {{saved: number, remaining: number}} row  This goal's row.
  * @param {object[]} contributions  This goal's contributions (for the withdraw check).
+ * @param {number|null} [available=null]  Planner money available to assign (paise); null = no plan, no limit.
  * @returns {HTMLElement}
+ *   The Back button goes to session.backStep (default "main").
  */
-export function buildGoalAmountStep(session, row, contributions) {
+export function buildGoalAmountStep(session, row, contributions, available = null) {
   const type = session.step;
   const errors = errorBox();
   let text = '';
@@ -41,7 +45,7 @@ export function buildGoalAmountStep(session, row, contributions) {
     label: type === 'add' ? 'Add to goal' : 'Withdraw',
     block: true,
     disabled: true,
-    onClick: () => submit(session, { goalId: session.goalId, type, amount: textToPaise(text) }, contributions, confirm, errors),
+    onClick: () => submit(session, { goalId: session.goalId, type, amount: textToPaise(text) }, { contributions, available }, confirm, errors),
   });
   const field = amountField({
     text,
@@ -52,7 +56,7 @@ export function buildGoalAmountStep(session, row, contributions) {
       confirm.disabled = !hasAmount(next);
     },
   });
-  const back = button({ label: 'Back', variant: 'secondary', block: true, onClick: () => { session.step = 'main'; session.redraw(); } });
-  const hint = type === 'add' ? `${formatMoney(row.remaining)} to go` : `Set aside now: ${formatMoney(row.saved)}`;
+  const back = button({ label: 'Back', variant: 'secondary', block: true, onClick: () => { session.step = session.backStep ?? 'main'; session.redraw(); } });
+  const hint = type === 'add' ? `${formatMoney(row.remaining)} to go${available === null ? '' : ` · ${formatMoney(Math.max(0, available))} available`}` : `Set aside now: ${formatMoney(row.saved)}`;
   return el('div', { className: 'stack' }, el('p', { className: 'muted goal-hint', text: hint }), field, errors.element, confirm, back);
 }

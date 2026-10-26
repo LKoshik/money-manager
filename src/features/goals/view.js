@@ -7,8 +7,11 @@ import { goalCard } from './goalCard.js';
 import { goalBar } from './goalBar.js';
 import { openGoalSheet } from './goalSheet.js';
 import { openGoalFormSheet } from './goalFormSheet.js';
+import { availableCard } from './availableCard.js';
+import { openAssignSheet, openGoalRows } from './assignSheet.js';
 import { buildGoalRows, sortGoalRows, goalTotals } from '../../core/goalList.js';
 import { totalsText } from '../../core/goalText.js';
+import { availableToAssign } from '../../core/stackModel.js';
 
 const NOTE = 'Goals are only tracked here. Money you add to a goal does not change your accounts or reports.';
 
@@ -36,7 +39,7 @@ function emptyBlock(hasArchived) {
 
 /**
  * Build the Goals screen.
- * @param {{goals: object[], contributions: object[]}} state
+ * @param {{goals: object[], contributions: object[], plans: object[]}} state
  * @param {{now?: Date, showArchived?: boolean, onToggleArchived?: () => void}} [options]
  * @returns {HTMLElement}
  */
@@ -44,6 +47,7 @@ export function buildView(state, { now = new Date(), showArchived = false, onTog
   const rows = sortGoalRows(buildGoalRows(state.goals, state.contributions, now));
   const live = rows.filter((row) => !row.goal.archived);
   const archived = rows.filter((row) => row.goal.archived);
+  const stack = availableToAssign(state, now); // null when there is no plan: the card is not shown
   const toggle =
     archived.length > 0 &&
     button({ label: showArchived ? 'Hide archived' : `Show archived (${archived.length})`, variant: 'secondary', block: true, onClick: onToggleArchived });
@@ -51,6 +55,7 @@ export function buildView(state, { now = new Date(), showArchived = false, onTog
     'div',
     { className: 'stack' },
     el('p', { className: 'muted goals-note', text: NOTE }),
+    stack && availableCard(stack, openGoalRows(state, now).length > 0, openAssignSheet),
     live.length === 0 ? emptyBlock(archived.length > 0) : [summaryCard(goalTotals(live)), cardsOf(live, now)],
     live.length > 0 && button({ label: 'New goal', icon: 'plus', variant: 'secondary', block: true, onClick: () => openGoalFormSheet() }),
     toggle,

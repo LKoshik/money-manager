@@ -164,3 +164,45 @@ export function makeLoan(overrides = {}) {
 export function makeRepayment(overrides = {}) {
   return { id: 'p1', loanId: 'l1', amount: 30000, date: localIso(2026, 9, 12), accountId: 'cash', note: '', ...overrides };
 }
+
+/**
+ * Make a fake plan version. Default: Rs 50,000 income, buckets of Rs 30,000 + Rs 10,000, applies from Oct 2026.
+ * @param {object} [overrides]  Fields to change.
+ * @returns {object}
+ */
+export function makePlan(overrides = {}) {
+  return {
+    id: 'pl1',
+    appliesFrom: '2026-10',
+    income: 5000000,
+    buckets: [
+      { id: 'b1', name: 'Rent / needs', amount: 3000000 },
+      { id: 'b2', name: 'Savings', amount: 1000000 },
+    ],
+    createdAt: localIso(2026, 9, 1),
+    ...overrides,
+  };
+}
+
+/**
+ * Make a fake extra income entry. Default: a gift of Rs 8,000 on 12 Oct 2026, Rs 5,000 to wishes and Rs 3,000 to "Savings",
+ * tied to the income transaction "t-gift" (see makeGiftTxn).
+ * @param {object} [overrides]  Fields to change.
+ * @returns {object}
+ */
+export function makeExtraIncome(overrides = {}) {
+  return {
+    id: 'e1',
+    name: 'Gift',
+    amount: 800000,
+    date: localIso(2026, 9, 12),
+    wishes: 500000,
+    buckets: [{ id: 'b2', name: 'Savings', amount: 300000 }],
+    transactionId: 't-gift',
+    createdAt: localIso(2026, 9, 12),
+    ...overrides,
+  };
+}
+
+/** @param {object} [overrides] @returns {object} The income transaction that goes with makeExtraIncome. */
+export const makeGiftTxn = (overrides = {}) => makeTxn({ id: 't-gift', type: 'income', amount: 800000, date: localIso(2026, 9, 12), ...overrides });

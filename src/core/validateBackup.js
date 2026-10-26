@@ -5,6 +5,8 @@
 
 import { storesInFile, listsOf } from './backupStores.js';
 import { checkLoanLinks } from './validateLoanLinks.js';
+import { checkPlanVersions } from './validatePlans.js';
+import { checkExtraIncomeLinks } from './validateExtraIncome.js';
 
 /** The id written into every backup file made by this app. */
 export const BACKUP_APP_ID = 'money-manager';
@@ -51,6 +53,8 @@ function checkLinks(data, errors) {
     if (!goalIds.has(item.goalId)) errors.push(`contributions[${index}]: goal not found`);
   });
   checkLoanLinks(data, accountIds, errors);
+  checkPlanVersions(data.plans, errors);
+  checkExtraIncomeLinks(data.extraIncomes, data.transactions, errors);
 }
 
 /** Check the outer part of the file (who made it, which version). */
